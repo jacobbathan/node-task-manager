@@ -12,18 +12,51 @@ MongoClient.connect(
     }
     const db = client.db(databaseName);
 
-    db.collection('tasks').findOne(
-      { _id: new ObjectID('5cf855f4ff08702143135231') },
-      (error, tasks) => {
-        console.log(tasks);
-      }
-    );
-
     db.collection('tasks')
-      .find({ completed: false })
-      .toArray((error, tasks) => {
-        console.log(tasks);
+      .updateMany(
+        { completed: false },
+        {
+          $set: {
+            completed: true
+          }
+        }
+      )
+      .then(result => {
+        console.log(result);
+      })
+      .catch(error => {
+        console.log(error);
       });
+
+    //    db.collection('users')
+    //      .updateOne(
+    //        { _id: new ObjectID('5cf851d262fde720c82dda80') },
+    //        {
+    //          $set: {
+    //            name: 'Mike'
+    //          }
+    //        }
+    //      )
+    //      .then(result => {
+    //        console.log(result);
+    //      })
+    //      .catch(error => {
+    //        console.log(error);
+    //      });
+    //
+    //    db.collection('tasks').findOne(
+    //      { _id: new ObjectID('5cf855f4ff08702143135231') },
+    //      (error, tasks) => {
+    //        console.log(tasks);
+    //      }
+    //    );
+    //
+    //    db.collection('tasks')
+    //      .find({ completed: false })
+    //      .toArray((error, tasks) => {
+    //        console.log(tasks);
+    //      });
+    //
 
     //    db.collection('users').findOne(
     //      { _id: new ObjectID('5cf85ccf55c7e1229e038834') },
