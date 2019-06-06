@@ -3,10 +3,6 @@ const { MongoClient, ObjectID } = require('mongodb');
 const connectionURL = 'mongodb://127.0.0.1:27018';
 const databaseName = 'task-manager';
 
-const id = new ObjectID();
-console.log(id.id.length);
-console.log(id.toHexString().length);
-
 MongoClient.connect(
   connectionURL,
   { useNewUrlParser: true },
@@ -16,6 +12,35 @@ MongoClient.connect(
     }
     const db = client.db(databaseName);
 
+    db.collection('tasks').findOne(
+      { _id: new ObjectID('5cf855f4ff08702143135231') },
+      (error, tasks) => {
+        console.log(tasks);
+      }
+    );
+
+    db.collection('tasks')
+      .find({ completed: false })
+      .toArray((error, tasks) => {
+        console.log(tasks);
+      });
+
+    //    db.collection('users').findOne(
+    //      { _id: new ObjectID('5cf85ccf55c7e1229e038834') },
+    //      (error, user) => {
+    //        if (error) {
+    //          return console.log('Unable to get user');
+    //        }
+    //        console.log(user);
+    //      }
+    //    );
+    //
+    //    db.collection('users')
+    //      .find({ age: 28 })
+    //      .toArray((error, users) => {
+    //        console.log(users);
+    //      });
+    //
     // db.collection('users').insertOne(
     //   {
     //     _id: id,
