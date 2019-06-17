@@ -67,9 +67,20 @@ router.get('/users/me', auth, async (req, res) => {
   res.send(req.user);
 });
 
-router.post('/users/me/avatar', upload.single('upload'), (req, res) => {
-  res.send();
-});
+router.post(
+  '/users/me/avatar',
+  auth,
+  upload.single('avatar'),
+  async (req, res) => {
+    req.user.avatar = req.file.buffer;
+    console.log(req.file.buffer);
+    await req.user.save();
+    res.send();
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 
 router.patch('/users/me', auth, async (req, res) => {
   const updates = Object.keys(req.body);
