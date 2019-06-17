@@ -5,7 +5,6 @@ const auth = require('../middleware/auth');
 const User = require('../models/user');
 
 const upload = multer({
-  dest: 'avatar',
   limits: {
     fileSize: 1000000
   },
@@ -73,7 +72,6 @@ router.post(
   upload.single('avatar'),
   async (req, res) => {
     req.user.avatar = req.file.buffer;
-    console.log(req.file.buffer);
     await req.user.save();
     res.send();
   },
@@ -81,6 +79,32 @@ router.post(
     res.status(400).send({ error: error.message });
   }
 );
+
+router.delete(
+  '/users/me/avatar',
+  auth,
+  async (req, res) => {
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.send();
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
+
+router.get('/users/:id/avatar', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user || !user.avatar) {
+      throw new Error('error');
+    }
+    res.set('Content-Type', 'image/jpg');
+    res.send(user.avatar);
+  } catch (error) {
+    res.status(404).send({ error: error.message });
+  }
+});
 
 router.patch('/users/me', auth, async (req, res) => {
   const updates = Object.keys(req.body);

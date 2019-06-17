@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     },
     email: {
       type: String,
+      unique: true,
       required: true,
       trim: true,
       lowercase: true,
@@ -20,17 +21,16 @@ const userSchema = new mongoose.Schema(
         if (!validator.isEmail(value)) {
           throw new Error('Email is invalid');
         }
-      },
-      unique: true
+      }
     },
     password: {
       type: String,
       required: true,
+      minlength: 7,
       trim: true,
-      minlength: 6,
       validate(value) {
-        if (value.includes('password')) {
-          throw new Error('Can not use the string password');
+        if (value.toLowerCase().includes('password')) {
+          throw new Error('Password cannot contain "password"');
         }
       }
     },
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
       default: 0,
       validate(value) {
         if (value < 0) {
-          throw new Error('Age must be a positive number');
+          throw new Error('Age must be a postive number');
         }
       }
     },
